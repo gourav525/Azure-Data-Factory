@@ -1,0 +1,28 @@
+{
+	"name": "Schedule_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Scheduling_Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ADFPipeline-2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"schema_Name": "source",
+						"table_Name": "Orders"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
