@@ -1,0 +1,9 @@
+{
+	"name": "GDSAzureDataFactory",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1f6a028f-1c43-4dff-bebe-3ddaa637b63b",
+		"tenantId": "be789156-c0e6-4810-96cf-d4b9bf125e75"
+	}
+}
