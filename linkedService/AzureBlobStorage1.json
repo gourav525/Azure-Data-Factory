@@ -1,0 +1,12 @@
+{
+	"name": "AzureBlobStorage1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": "DefaultEndpointsProtocol=https;AccountName=gdsstorageaccountdiffreg;EndpointSuffix=core.windows.net;",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDg1MDVFQzNELTg4OUYtNDA5RS1BMTk5LUY5OUExRjdGQzQ5MV9kN2M1ODQ3ZS03M2QxLTQxYzItOTRlOC1kNDE1NjQwMjBkNjQiDQp9"
+		}
+	}
+}
