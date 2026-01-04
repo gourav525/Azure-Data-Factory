@@ -1,0 +1,20 @@
+{
+	"name": "ADF_Sink_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Orders_Data",
+				"fileSystem": "adf-pipeline2-sink"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

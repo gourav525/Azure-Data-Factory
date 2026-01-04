@@ -1,0 +1,22 @@
+{
+	"name": "ds_emptyJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_DataLake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "empty.json",
+				"folderPath": "monitor",
+				"fileSystem": "adf-pipeline-2"
+			}
+		},
+		"schema": {
+			"type": "object"
+		}
+	}
+}
