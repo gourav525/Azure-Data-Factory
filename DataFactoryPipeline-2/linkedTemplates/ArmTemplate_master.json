@@ -1,0 +1,126 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DataFactoryPipeline-2"
+		},
+		"ADF2LinkedSQLService_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ADF2LinkedSQLService'"
+		},
+		"ADFSQLDatabaseSink_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ADFSQLDatabaseSink'"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureBlobStorage_Destination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Destination'"
+		},
+		"ls_DataLake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_DataLake'"
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "gds-new-sql-server-demo.database.windows.net"
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DatabaseADF2"
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "GDS-ADMIN"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "gds-new-sql-server-demo.database.windows.net"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "master"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "GDS-ADMIN"
+		},
+		"ls_DataLake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gdsstorageaccountneu.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "DataFactoryPipeline-2_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ADF2LinkedSQLService_password": {
+						"value": "[parameters('ADF2LinkedSQLService_password')]"
+					},
+					"ADFSQLDatabaseSink_password": {
+						"value": "[parameters('ADFSQLDatabaseSink_password')]"
+					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureBlobStorage_Destination_connectionString": {
+						"value": "[parameters('AzureBlobStorage_Destination_connectionString')]"
+					},
+					"ls_DataLake_accountKey": {
+						"value": "[parameters('ls_DataLake_accountKey')]"
+					},
+					"ADF2LinkedSQLService_properties_typeProperties_server": {
+						"value": "[parameters('ADF2LinkedSQLService_properties_typeProperties_server')]"
+					},
+					"ADF2LinkedSQLService_properties_typeProperties_database": {
+						"value": "[parameters('ADF2LinkedSQLService_properties_typeProperties_database')]"
+					},
+					"ADF2LinkedSQLService_properties_typeProperties_userName": {
+						"value": "[parameters('ADF2LinkedSQLService_properties_typeProperties_userName')]"
+					},
+					"ADFSQLDatabaseSink_properties_typeProperties_server": {
+						"value": "[parameters('ADFSQLDatabaseSink_properties_typeProperties_server')]"
+					},
+					"ADFSQLDatabaseSink_properties_typeProperties_database": {
+						"value": "[parameters('ADFSQLDatabaseSink_properties_typeProperties_database')]"
+					},
+					"ADFSQLDatabaseSink_properties_typeProperties_userName": {
+						"value": "[parameters('ADFSQLDatabaseSink_properties_typeProperties_userName')]"
+					},
+					"ls_DataLake_properties_typeProperties_url": {
+						"value": "[parameters('ls_DataLake_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

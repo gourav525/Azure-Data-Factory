@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DataFactoryPipeline-2"
+		},
+		"ADF2LinkedSQLService_password": {
+			"value": ""
+		},
+		"ADFSQLDatabaseSink_password": {
+			"value": ""
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage_Destination_connectionString": {
+			"value": ""
+		},
+		"ls_DataLake_accountKey": {
+			"value": ""
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_server": {
+			"value": "gds-new-sql-server-demo.database.windows.net"
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_database": {
+			"value": "DatabaseADF2"
+		},
+		"ADF2LinkedSQLService_properties_typeProperties_userName": {
+			"value": "GDS-ADMIN"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_server": {
+			"value": "gds-new-sql-server-demo.database.windows.net"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_database": {
+			"value": "master"
+		},
+		"ADFSQLDatabaseSink_properties_typeProperties_userName": {
+			"value": "GDS-ADMIN"
+		},
+		"ls_DataLake_properties_typeProperties_url": {
+			"value": "https://gdsstorageaccountneu.dfs.core.windows.net/"
+		}
+	}
+}
