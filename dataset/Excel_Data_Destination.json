@@ -1,0 +1,19 @@
+{
+	"name": "Excel_Data_Destination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_Destination",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Destination_Sales_Data",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "synapse-data-store"
+			}
+		},
+		"schema": []
+	}
+}
