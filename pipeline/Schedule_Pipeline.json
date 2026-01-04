@@ -17,8 +17,18 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"schema_Name": "source",
-						"table_Name": "Orders"
+						"schema_Name": {
+							"value": "@pipeline().parameters.schema",
+							"type": "Expression"
+						},
+						"table_Name": {
+							"value": "@pipeline().parameters.table",
+							"type": "Expression"
+						},
+						"backFilling": {
+							"value": "@pipeline().parameters.backfilling",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -79,6 +89,17 @@
 				}
 			}
 		],
+		"parameters": {
+			"schema": {
+				"type": "string"
+			},
+			"table": {
+				"type": "string"
+			},
+			"backfilling": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
