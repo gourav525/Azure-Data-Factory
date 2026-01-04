@@ -1,0 +1,9 @@
+{
+	"name": "DataFactoryPipeline-2",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "fe22f8f5-5e09-4dde-8264-66651fac3972",
+		"tenantId": "be789156-c0e6-4810-96cf-d4b9bf125e75"
+	}
+}
