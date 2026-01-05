@@ -54,6 +54,10 @@
 		"ls_DataLake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://gdsstorageaccountneu.dfs.core.windows.net/"
+		},
+		"ls_Rest_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pokeapi.co/api/v2/pokemon"
 		}
 	},
 	"variables": {
@@ -143,6 +147,22 @@
 						"type": "SecureString",
 						"value": "[parameters('ls_DataLake_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_Rest_API')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "linked Services for Rest API",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('ls_Rest_API_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -283,6 +303,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_Rest_API",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "?offset={offset}",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_Rest_API')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Source_Table_Data')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -351,6 +394,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_API')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_DataLake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "pokemon.json",
+						"folderPath": "API_Data",
+						"fileSystem": "adf-pipeline2-sink"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_DataLake')]"
 			]
 		},
 		{
@@ -715,6 +783,101 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RestAPI')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "API_EndPoint",
+						"description": "Fetch Data from an API ",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://pokeapi.co/api/v2/pokemon"
+						}
+					},
+					{
+						"name": "Copy_All_Data",
+						"description": "Copy Data from Rest API",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "API_EndPoint",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"QueryParameters.offset": {
+										"value": "RANGE:0:@{activity('API_EndPoint').output.count}:20",
+										"type": "Expression"
+									}
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_API",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/RestResource1')]",
+				"[concat(variables('factoryId'), '/datasets/ds_API')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowTemp')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -835,121 +998,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflowTemp')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Schedule_Pipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Scheduling_Pipeline",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "ADFPipeline-2",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"schema_Name": {
-									"value": "@pipeline().parameters.schema",
-									"type": "Expression"
-								},
-								"table_Name": {
-									"value": "@pipeline().parameters.table",
-									"type": "Expression"
-								},
-								"backFilling": {
-									"value": "@pipeline().parameters.backfilling",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Alert",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Scheduling_Pipeline",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"method": "POST",
-							"headers": {},
-							"url": "https://prod-11.northeurope.logic.azure.com:443/workflows/926cfde6555944d2987588ddf2df28d1/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=hieDEL2c3uEISD2X4Vzgf3-E-2etp2llih1XZsGSXbs",
-							"body": {
-								"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runId\" : \"@{pipeline().RunId}\"\n\n}",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Alert_On_Success",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Scheduling_Pipeline",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"method": "POST",
-							"headers": {},
-							"url": "https://prod-11.northeurope.logic.azure.com:443/workflows/926cfde6555944d2987588ddf2df28d1/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=hieDEL2c3uEISD2X4Vzgf3-E-2etp2llih1XZsGSXbs",
-							"body": {
-								"value": "{\n    \"pipeline_name\":\"@{pipeline().Pipeline}\",\n    \"pipeline_runId\":\"@{pipeline().RunId}\"\n}",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"schema": {
-						"type": "string"
-					},
-					"table": {
-						"type": "string"
-					},
-					"backfilling": {
-						"type": "string"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/ADFPipeline-2')]"
 			]
 		}
 	]

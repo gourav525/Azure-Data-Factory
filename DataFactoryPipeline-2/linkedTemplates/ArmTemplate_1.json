@@ -1,0 +1,129 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DataFactoryPipeline-2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Schedule_Pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Scheduling_Pipeline",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ADFPipeline-2",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"schema_Name": {
+									"value": "@pipeline().parameters.schema",
+									"type": "Expression"
+								},
+								"table_Name": {
+									"value": "@pipeline().parameters.table",
+									"type": "Expression"
+								},
+								"backFilling": {
+									"value": "@pipeline().parameters.backfilling",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Alert",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Scheduling_Pipeline",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-11.northeurope.logic.azure.com:443/workflows/926cfde6555944d2987588ddf2df28d1/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=hieDEL2c3uEISD2X4Vzgf3-E-2etp2llih1XZsGSXbs",
+							"body": {
+								"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runId\" : \"@{pipeline().RunId}\"\n\n}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Alert_On_Success",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Scheduling_Pipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"url": "https://prod-11.northeurope.logic.azure.com:443/workflows/926cfde6555944d2987588ddf2df28d1/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=hieDEL2c3uEISD2X4Vzgf3-E-2etp2llih1XZsGSXbs",
+							"body": {
+								"value": "{\n    \"pipeline_name\":\"@{pipeline().Pipeline}\",\n    \"pipeline_runId\":\"@{pipeline().RunId}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"schema": {
+						"type": "string"
+					},
+					"table": {
+						"type": "string"
+					},
+					"backfilling": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}

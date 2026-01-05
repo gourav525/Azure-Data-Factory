@@ -55,6 +55,10 @@
 			"type": "string",
 			"defaultValue": "https://gdsstorageaccountneu.dfs.core.windows.net/"
 		},
+		"ls_Rest_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pokeapi.co/api/v2/pokemon"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -117,10 +121,33 @@
 					},
 					"ls_DataLake_properties_typeProperties_url": {
 						"value": "[parameters('ls_DataLake_properties_typeProperties_url')]"
+					},
+					"ls_Rest_API_properties_typeProperties_url": {
+						"value": "[parameters('ls_Rest_API_properties_typeProperties_url')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "DataFactoryPipeline-2_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactoryPipeline-2_ArmTemplate_0')]"
+			]
 		}
 	]
 }

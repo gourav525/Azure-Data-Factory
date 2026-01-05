@@ -41,6 +41,9 @@
 		"ls_DataLake_properties_typeProperties_url": {
 			"value": "https://gdsstorageaccountneu.dfs.core.windows.net/"
 		},
+		"ls_Rest_API_properties_typeProperties_url": {
+			"value": "https://pokeapi.co/api/v2/pokemon"
+		},
 		"containerUri": {
 			"value": ""
 		},
