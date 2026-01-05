@@ -452,7 +452,14 @@
 					{
 						"name": "Get File Details",
 						"type": "GetMetadata",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Trigger_on_Arrival",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -752,6 +759,25 @@
 									}
 								}
 							]
+						}
+					},
+					{
+						"name": "Trigger_on_Arrival",
+						"type": "Validation",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_csv_file_based",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": "adf-pipeline-2",
+									"p_folder": "trigger",
+									"p_file": "locations.csv"
+								}
+							},
+							"timeout": "0.12:00:00",
+							"sleep": 10
 						}
 					}
 				],
