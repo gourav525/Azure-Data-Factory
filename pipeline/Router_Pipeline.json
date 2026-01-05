@@ -331,6 +331,43 @@
 					"timeout": "0.12:00:00",
 					"sleep": 10
 				}
+			},
+			{
+				"name": "Delete_Files_Locations",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "For_Each_Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_csv_file_based",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": "adf-pipeline-2",
+							"p_folder": "trigger",
+							"p_file": "locations.csv"
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"annotations": []
