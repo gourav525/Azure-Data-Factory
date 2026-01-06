@@ -21,18 +21,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().p_file",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@dataset().p_folder",
-					"type": "Expression"
-				},
-				"fileSystem": {
-					"value": "@dataset().p_container",
-					"type": "Expression"
-				}
+				"fileName": "locations.csv",
+				"folderPath": "delta_lake_source",
+				"fileSystem": "adf-pipeline-2"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
