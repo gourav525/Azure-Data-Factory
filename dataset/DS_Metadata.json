@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": "files",
-				"fileSystem": "source-data-sets"
+				"fileSystem": "adf-pipeline-2"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
