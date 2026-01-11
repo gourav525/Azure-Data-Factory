@@ -1,0 +1,9 @@
+{
+	"name": "adf-aw-project-adventure-works",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "057730a1-c6c7-44dd-ac65-4a735bfd9339",
+		"tenantId": "be789156-c0e6-4810-96cf-d4b9bf125e75"
+	}
+}
