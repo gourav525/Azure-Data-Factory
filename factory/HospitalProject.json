@@ -1,0 +1,9 @@
+{
+	"name": "HospitalProject",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5c62762c-010d-4c92-a4ad-ce41338e5560",
+		"tenantId": "be789156-c0e6-4810-96cf-d4b9bf125e75"
+	}
+}
