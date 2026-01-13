@@ -1,0 +1,30 @@
+{
+	"name": "ds_git_services",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GitHubRawSource_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"rel_url_path": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().rel_url_path",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
